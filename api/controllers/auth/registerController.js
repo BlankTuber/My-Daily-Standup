@@ -1,4 +1,3 @@
-const argon2 = require("argon2");
 const User = require("../../models/User");
 
 const register = async (req, res) => {
@@ -14,8 +13,7 @@ const register = async (req, res) => {
             return res.status(409).json({ error: "Username already taken" });
         }
 
-        const hashed = await argon2.hash(password);
-        const user = await User.create({ username, password: hashed });
+        const user = await User.create({ username, password });
 
         req.session.userId = user._id;
         return res.status(201).json({ message: "Account created" });
