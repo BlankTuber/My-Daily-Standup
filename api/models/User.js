@@ -3,7 +3,8 @@ const argon2 = require("argon2");
 
 const userSchema = new Schema({
     username: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    timezoneOffset: { type: Number, default: 0 }
 }, { timestamps: true });
 
 userSchema.pre("save", async function (next) {
