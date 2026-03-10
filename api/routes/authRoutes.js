@@ -18,3 +18,5 @@ const isAuth = require("../middleware/isAuth");
 router.post("/register", isGuest, register);
 router.post("/login", isGuest, login);
 router.delete("/logout", isAuth, logout);
+
+module.exports = router;
