@@ -7,10 +7,9 @@ const userSchema = new Schema({
     timezoneOffset: { type: Number, default: 0 }
 }, { timestamps: true });
 
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
     this.password = await argon2.hash(this.password);
-    next();
 });
 
 userSchema.methods.verifyPassword = async function (plaintext) {

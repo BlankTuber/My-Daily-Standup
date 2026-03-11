@@ -1,7 +1,8 @@
 const corsOptions = {
-    origin: process.env.ORIGIN || "http://localhost:3000",
-    methods: "GET,PUT,POST,DELETE",
-    credentials: true
+    origin: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+    maxAge: 86400,
 };
 
 module.exports = corsOptions;
