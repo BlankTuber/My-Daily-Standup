@@ -1,4 +1,5 @@
 require("dotenv").config();
+const path = require("path");
 const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
@@ -6,6 +7,7 @@ const cors = require("cors");
 
 const connectDB = require("./config/db");
 const corsOptions = require("./config/corsConfig");
+const helmetOptions = require("./config/helmetConfig");
 const sessionMiddleware = require("./config/sessionConfig");
 const runScheduler = require("./cron/scheduler");
 
@@ -13,13 +15,21 @@ const app = express();
 connectDB();
 runScheduler();
 
+// View engine
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Static assets
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use(cors(corsOptions));
-app.use(helmet());
+app.use(helmet(helmetOptions));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(sessionMiddleware);
 
+// API routes
 const authRoutes = require("./routes/authRoutes");
 const planRoutes = require("./routes/planRoutes");
 const pushRoutes = require("./routes/pushRoutes");
@@ -27,6 +37,9 @@ const pushRoutes = require("./routes/pushRoutes");
 app.use("/auth", authRoutes);
 app.use("/plans", planRoutes);
 app.use("/push", pushRoutes);
+
+const viewRoutes = require("./routes/viewRoutes");
+app.use("/", viewRoutes);
 
 app.use((req, res) => res.status(404).json({ error: "Not found" }));
 app.use((err, req, res, next) => {

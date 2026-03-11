@@ -13,7 +13,7 @@ const createPlan = async (req, res) => {
         const existing = await DayPlan.findOne({ userId, date: today });
         if (existing) return res.status(409).json({ error: "A plan for today already exists" });
 
-        const plan = await DayPlan.create({ userId, date: today, tasks });
+        const plan = await DayPlan.create({ userId, date: today, tasks, status: "active" });
         return res.status(201).json(plan);
     } catch (err) {
         console.error(err);

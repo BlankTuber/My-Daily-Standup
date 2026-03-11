@@ -5,11 +5,10 @@ const router = express.Router();
 const register = require("../controllers/auth/registerController");
 const login = require("../controllers/auth/loginController");
 const logout = require("../controllers/auth/logoutController");
+const { getMe, updateMe } = require("../controllers/auth/meController");
+const deleteAccount = require("../controllers/auth/deleteAccountController");
 
-const limiter = rateLimit({
-    windowMs: 1000 * 60 * 2,
-    max: 10
-})
+const limiter = rateLimit({ windowMs: 1000 * 60 * 2, max: 10 });
 router.use(limiter);
 
 const isGuest = require("../middleware/isGuest");
@@ -18,5 +17,8 @@ const isAuth = require("../middleware/isAuth");
 router.post("/register", isGuest, register);
 router.post("/login", isGuest, login);
 router.delete("/logout", isAuth, logout);
+router.get("/me", isAuth, getMe);
+router.patch("/me", isAuth, updateMe);
+router.delete("/me", isAuth, deleteAccount);
 
 module.exports = router;

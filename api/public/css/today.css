@@ -1,0 +1,262 @@
+/* ============================================================
+   TODAY HEADER
+   ============================================================ */
+.today-header {
+    margin-bottom: var(--sp-6);
+}
+
+.today-header h1 {
+    font-size: var(--text-xl);
+}
+
+.today-header p {
+    margin-top: var(--sp-1);
+}
+
+/* ============================================================
+   TASK LIST
+   ============================================================ */
+.task-list,
+#task-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-5);
+}
+
+/* Ensure the JS-driven list shows empty state correctly */
+#task-list:empty::after {
+    content: "No tasks yet — add one below.";
+    display: block;
+    text-align: center;
+    color: var(--clr-text-muted);
+    font-size: var(--text-sm);
+    padding: var(--sp-4) 0;
+}
+
+/* ============================================================
+   TASK CARD
+   ============================================================ */
+.task-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    flex-wrap: wrap;
+}
+
+.task-card__title {
+    font-weight: 600;
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.task-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-top: var(--sp-2);
+    font-size: var(--text-sm);
+    color: var(--clr-text-muted);
+}
+
+.task-card__controls {
+    margin-top: var(--sp-4);
+}
+
+.task-card__note {
+    margin-top: var(--sp-3);
+    padding-top: var(--sp-3);
+    border-top: 1px solid var(--clr-border);
+}
+
+/* ============================================================
+   SAVE STATUS
+   ============================================================ */
+.task-save-status {
+    font-size: var(--text-xs);
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.status-saving {
+    color: var(--clr-text-muted);
+}
+
+.status-saved {
+    color: var(--clr-success);
+}
+
+.status-error {
+    color: var(--clr-danger);
+}
+
+.status-pending {
+    color: var(--clr-warn);
+}
+
+/* ============================================================
+   CHECKBOX LABEL
+   ============================================================ */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    cursor: pointer;
+    user-select: none;
+    padding: var(--sp-2) 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 1.35em;
+    height: 1.35em;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   TASK BUILDER  (create-plan state)
+   ============================================================ */
+.task-builder {
+    margin-bottom: var(--sp-4);
+}
+
+.task-builder:empty {
+    display: none;
+}
+
+/* ============================================================
+   PAGE ACTIONS
+   ============================================================ */
+.today-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    margin-top: var(--sp-2);
+}
+
+@media (min-width: 480px) {
+    .today-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+}
+
+/* ============================================================
+   REFLECTION AREA  (complete flow)
+   ============================================================ */
+.reflection-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--clr-border);
+    margin-top: var(--sp-2);
+}
+
+/* ============================================================
+   COMPLETED STATE
+   ============================================================ */
+.summary-alert {
+    margin-bottom: var(--sp-4);
+}
+
+.reflection-card {
+    margin-bottom: var(--sp-4);
+    background: var(--clr-surface-alt);
+    border-style: dashed;
+}
+
+.task-card--done .task-card__header {
+    align-items: center;
+}
+
+/* ============================================================
+   TASK TYPE PIP  — coloured dot per type
+   ============================================================ */
+.task-type-pip {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+    /* optical align with text */
+}
+
+.task-type-pip--checkbox {
+    background: var(--clr-success);
+}
+
+.task-type-pip--timer {
+    background: #7b6fc9;
+}
+
+.task-type-pip--counter {
+    background: #3a9fbf;
+}
+
+.task-type-pip--timed_counter {
+    background: #2d86a1;
+}
+
+.task-type-pip--note {
+    background: var(--clr-warn);
+}
+
+.task-type-pip--rating {
+    background: var(--clr-primary);
+}
+
+/* ============================================================
+   TASK CARD TITLE ROW
+   ============================================================ */
+.task-card__title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    flex: 1;
+    min-width: 0;
+}
+
+/* ============================================================
+   TASK TYPE LABEL  — sits below the title
+   ============================================================ */
+.task-card__type-label {
+    font-size: var(--text-xs);
+    color: var(--clr-text-muted);
+    margin-top: var(--sp-2);
+    padding-top: var(--sp-2);
+    border-top: 1px solid var(--clr-border);
+}
+
+/* ============================================================
+   TASK CARD ACTIONS  — edit + remove buttons
+   ============================================================ */
+.task-card__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    flex-shrink: 0;
+}
+
+.task-card__remove {
+    color: var(--clr-text-muted);
+}
+
+.task-card__remove:hover {
+    color: var(--clr-danger);
+}
+
+/* ============================================================
+   TASK BUILDER FORM
+   ============================================================ */
+.task-builder-form {
+    margin-bottom: var(--sp-3);
+    background: var(--clr-surface-alt);
+    border-style: dashed;
+}

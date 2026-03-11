@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#c97b4b">
+    <meta name="description" content="My Daily Standup — your personal daily planner">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <title>
+        <%= title %> — Daily Standup
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <% if (typeof pageStyle !=='undefined' && pageStyle) { %>
+        <link rel="stylesheet" href="/css/<%= pageStyle %>.css">
+        <% } %>
+            <script src="/js/app.js" defer></script>
+</head>
+<body<% if (typeof bodyClass !=='undefined' && bodyClass) { %> class="<%= bodyClass %>"<% } %>>

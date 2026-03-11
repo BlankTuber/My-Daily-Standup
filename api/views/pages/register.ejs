@@ -1,0 +1,42 @@
+<%- include('../partials/head') %>
+
+    <main class="auth-page">
+        <div class="auth-card">
+
+            <header class="auth-header">
+                <h1 class="auth-header__title">Get started 🌱</h1>
+                <p class="auth-header__subtitle">Plan your days. Track what matters.</p>
+            </header>
+
+            <div class="card">
+                <div role="alert" class="alert alert-error auth-error" data-auth-error></div>
+
+                <form class="auth-form" data-auth-form="register" novalidate>
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <input id="username" name="username" type="text" class="input" placeholder="choose a username"
+                            autocomplete="username" autocapitalize="none" spellcheck="false" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" class="input" placeholder="••••••••"
+                            autocomplete="new-password" required minlength="8">
+                        <span class="field-hint">At least 8 characters</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg btn-full" data-submit
+                        data-label="Create account">
+                        Create account
+                    </button>
+                </form>
+            </div>
+
+            <p class="auth-footer">
+                Already have an account? <a href="/login">Log in</a>
+            </p>
+
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>

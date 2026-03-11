@@ -1,0 +1,55 @@
+/* ============================================================
+   AUTH PAGES
+   ============================================================ */
+.auth-page {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--page-pad);
+    gap: var(--sp-6);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--sp-6);
+}
+
+.auth-header__title {
+    font-size: var(--text-2xl);
+    color: var(--clr-primary);
+    margin-bottom: var(--sp-2);
+}
+
+.auth-header__subtitle {
+    font-size: var(--text-sm);
+    color: var(--clr-text-muted);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+}
+
+/* Extra top margin before the submit button */
+.auth-form .btn-full {
+    margin-top: var(--sp-2);
+}
+
+.auth-footer {
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--clr-text-soft);
+}
+
+/* Error alert — hidden until JS adds text */
+.auth-error {
+    margin-bottom: var(--sp-4);
+}

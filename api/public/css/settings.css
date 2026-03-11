@@ -1,0 +1,82 @@
+/* ============================================================
+   SETTINGS SECTIONS
+   ============================================================ */
+.settings-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+}
+
+.settings-section__title {
+    font-size: var(--text-md);
+    margin-bottom: var(--sp-4);
+}
+
+/* ============================================================
+   SETTINGS ROW  — label + action side by side
+   ============================================================ */
+.settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sp-4);
+    padding: var(--sp-3) 0;
+}
+
+.settings-row--end {
+    justify-content: flex-end;
+    padding-bottom: 0;
+    gap: var(--sp-3);
+}
+
+.settings-push-row {
+    margin-top: var(--sp-4);
+}
+
+/* ============================================================
+   SETTINGS LABELS / VALUES
+   ============================================================ */
+.settings-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--clr-text-soft);
+    margin-bottom: var(--sp-1);
+}
+
+.settings-value {
+    font-size: var(--text-base);
+    color: var(--clr-text);
+}
+
+/* ============================================================
+   TIMEZONE FIELD
+   ============================================================ */
+.settings-field {
+    margin-top: var(--sp-4);
+}
+
+/* ============================================================
+   DANGER ZONE
+   ============================================================ */
+.settings-section--danger {
+    border-color: var(--clr-danger-bg);
+    background: color-mix(in srgb, var(--clr-surface) 92%, var(--clr-danger) 8%);
+}
+
+.settings-section--danger .settings-section__title {
+    color: var(--clr-danger);
+}
+
+.delete-confirm-area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    margin-top: var(--sp-4);
+    padding-top: var(--sp-4);
+    border-top: 1px solid var(--clr-danger-bg);
+}
+
+/* Hide empty alert */
+.delete-confirm-area .alert:empty {
+    display: none;
+}

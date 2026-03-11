@@ -1,0 +1,108 @@
+<%- include('../partials/head') %>
+    <%- include('../partials/nav') %>
+
+        <main class="page settings-page">
+
+            <div class="page-header">
+                <h1>Settings ⚙️</h1>
+            </div>
+
+            <div class="settings-sections">
+
+                <section class="card settings-section" aria-labelledby="account-heading">
+                    <h2 class="settings-section__title" id="account-heading">Account</h2>
+
+                    <div class="settings-row">
+                        <div>
+                            <p class="settings-label">Username</p>
+                            <p class="settings-value">
+                                <%= user.username %>
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="settings-row">
+                        <div>
+                            <p class="settings-label">Session</p>
+                            <p class="text-sm text-muted">You are logged in</p>
+                        </div>
+                        <button id="logout-btn" class="btn btn-ghost btn-sm" type="button" data-label="Log out">
+                            Log out
+                        </button>
+                    </div>
+                </section>
+
+                <section class="card settings-section" aria-labelledby="tz-heading">
+                    <h2 class="settings-section__title" id="tz-heading">Timezone</h2>
+                    <p class="text-sm text-muted">Used for daily reminders and midnight auto-complete.</p>
+
+                    <div class="field settings-field">
+                        <label for="timezone-select">Your timezone</label>
+                        <select id="timezone-select" class="input" data-current="<%= user.timezoneOffset %>">
+                            <!-- Populated by settings.js -->
+                        </select>
+                    </div>
+
+                    <div class="settings-row settings-row--end">
+                        <span id="tz-status" role="status" class="text-sm text-muted"></span>
+                        <button id="save-tz-btn" class="btn btn-primary btn-sm" type="button"
+                            data-label="Save timezone">
+                            Save timezone
+                        </button>
+                    </div>
+                </section>
+
+                <section class="card settings-section" aria-labelledby="push-heading">
+                    <h2 class="settings-section__title" id="push-heading">Notifications</h2>
+                    <p class="text-sm text-muted">Get reminders at 8am to plan your day, and 8pm to wrap up.</p>
+
+                    <div class="settings-row settings-push-row">
+                        <div>
+                            <p class="settings-label">Push notifications</p>
+                            <p class="text-sm text-muted" id="push-status-desc">Checking…</p>
+                        </div>
+                        <button id="push-toggle-btn" class="btn btn-sm" type="button" hidden
+                            aria-label="Toggle push notifications">
+                        </button>
+                    </div>
+                </section>
+                <section class="card settings-section settings-section--danger" aria-labelledby="danger-heading">
+                    <h2 class="settings-section__title" id="danger-heading">Danger zone</h2>
+                    <p class="text-sm text-muted">Permanently deletes your account and all your data. This cannot be
+                        undone.</p>
+
+                    <div class="settings-row settings-push-row">
+                        <div>
+                            <p class="settings-label">Delete account</p>
+                            <p class="text-sm text-muted">All plans, tasks and history will be erased.</p>
+                        </div>
+                        <button id="delete-account-btn" class="btn btn-sm btn-danger" type="button"
+                            data-label="Delete account">
+                            Delete account
+                        </button>
+                    </div>
+
+                    <div id="delete-confirm-area" class="delete-confirm-area" hidden>
+                        <div role="alert" class="alert alert-error" id="delete-error"></div>
+                        <div class="field">
+                            <label for="delete-password">Confirm your password</label>
+                            <input id="delete-password" type="password" class="input" placeholder="••••••••"
+                                autocomplete="current-password">
+                        </div>
+                        <div class="field-row">
+                            <button id="confirm-delete-btn" class="btn btn-danger btn-sm" type="button"
+                                data-label="Yes, delete everything">
+                                Yes, delete everything
+                            </button>
+                            <button id="cancel-delete-btn" class="btn btn-ghost btn-sm" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+        </main>
+
+        <%- include('../partials/footer') %>

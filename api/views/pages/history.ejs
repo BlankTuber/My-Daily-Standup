@@ -1,0 +1,26 @@
+<%- include('../partials/head') %>
+    <%- include('../partials/nav') %>
+
+        <main class="page history-page">
+
+            <div class="page-header">
+                <h1>History 📚</h1>
+                <p class="text-muted">Your completed days</p>
+            </div>
+
+            <div id="history-list" aria-live="polite">
+                <div class="loading-state">
+                    <span class="spinner" aria-hidden="true"></span>
+                    <span>Loading…</span>
+                </div>
+            </div>
+
+            <nav id="pagination" class="pagination" aria-label="History pages" hidden>
+                <button id="prev-page" class="btn btn-ghost btn-sm" type="button" disabled>← Prev</button>
+                <span id="page-info" class="text-sm text-muted" aria-live="polite"></span>
+                <button id="next-page" class="btn btn-ghost btn-sm" type="button">Next →</button>
+            </nav>
+
+        </main>
+
+        <%- include('../partials/footer') %>

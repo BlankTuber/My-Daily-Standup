@@ -1,0 +1,90 @@
+/* ============================================================
+   HISTORY LIST
+   ============================================================ */
+#history-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-6);
+}
+
+/* ============================================================
+   HISTORY CARD
+   ============================================================ */
+.history-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-3);
+}
+
+.history-card__date {
+    font-size: var(--text-md);
+    font-weight: 700;
+}
+
+.history-card__summary {
+    margin-top: var(--sp-1);
+    color: var(--clr-text-soft);
+}
+
+.history-card__reflection {
+    margin-top: var(--sp-4);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--clr-surface-alt);
+    border-left: 3px solid var(--clr-primary);
+    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+    font-style: italic;
+    color: var(--clr-text-soft);
+}
+
+/* The expand/collapse toggle button */
+.toggle-tasks {
+    flex-shrink: 0;
+    color: var(--clr-text-muted);
+    font-size: var(--text-xs);
+}
+
+/* ============================================================
+   HISTORY TASK LIST  (expanded)
+   ============================================================ */
+.history-task-list {
+    list-style: none;
+    margin-top: var(--sp-4);
+    border-top: 1px solid var(--clr-border);
+    padding-top: var(--sp-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+}
+
+.history-task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-2) 0;
+    border-bottom: 1px solid var(--clr-border);
+}
+
+.history-task:last-child {
+    border-bottom: none;
+}
+
+.history-task__title {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+    color: var(--clr-text-soft);
+}
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-4);
+    padding: var(--sp-4) 0 var(--sp-2);
+}

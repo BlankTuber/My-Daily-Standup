@@ -1,0 +1,272 @@
+<%- include('../partials/head') %>
+    <%- include('../partials/nav') %>
+
+        <main class="page today-page">
+
+            <% if (!plan) { %>
+
+                <div class="today-header">
+                    <h1>Plan your day ✨</h1>
+                    <p class="text-muted">What are you working towards today?</p>
+                </div>
+
+                <div id="task-list" role="list" aria-label="Tasks to add" aria-live="polite"></div>
+
+                <div id="task-builder"></div>
+
+                <div class="today-actions">
+                    <button id="add-task-btn" class="btn btn-outline" type="button">+ Add task</button>
+                    <button id="create-plan-btn" class="btn btn-primary" type="button" disabled
+                        data-label="Start my day →">
+                        Start my day →
+                    </button>
+                </div>
+
+                <% } else if (plan.status==='active' ) { %>
+
+                    <div class="today-header">
+                        <h1>Today's standup 🚀</h1>
+                        <p class="text-muted">
+                            <%= plan.date %>
+                        </p>
+                    </div>
+
+                    <ul class="task-list" id="active-task-list">
+                        <% plan.tasks.forEach(task=> { %>
+                            <li class="task-card card card-sm" data-task-id="<%= task._id %>">
+
+                                <div class="task-card__header">
+                                    <div class="task-card__title-row">
+                                        <span class="task-type-pip task-type-pip--<%= task.type %>"
+                                            aria-hidden="true"></span>
+                                        <span class="task-card__title">
+                                            <%= task.title %>
+                                        </span>
+                                    </div>
+                                    <span class="task-save-status" aria-live="polite"></span>
+                                </div>
+
+                                <div class="task-card__type-label">
+                                    <%= ({ checkbox: '☑️  Checkbox' , timer: '⏱️  Timer' , counter: '🔢  Counter' ,
+                                        timed_counter: '⏱️🔢  Timed counter' , note: '📝  Note' , rating: '⭐  Rating' ,
+                                        })[task.type] || task.type %>
+                                        <% if (task.config) { %>
+                                            <% if (task.config.targetMinutes) { %>&nbsp;· <%= task.config.targetMinutes
+                                                    %> min target<% } %>
+                                                        <% if (task.config.targetCount) { %>&nbsp;· <%=
+                                                                task.config.targetCount %>× target<% } %>
+                                                                    <% if (task.config.maxRating) { %>&nbsp;· out of <%=
+                                                                            task.config.maxRating %>
+                                                                            <% } %>
+                                                                                <% } %>
+                                </div>
+
+                                <div class="task-card__controls">
+
+                                    <% if (task.type==='checkbox' ) { %>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" class="task-input" data-field="completed"
+                                                <%=(task.result && task.result.completed) ? 'checked' : '' %>>
+                                            <span>Mark as done</span>
+                                        </label>
+
+                                        <% } else if (task.type==='timer' ) { %>
+                                            <div class="field">
+                                                <label>Minutes spent <span class="text-muted text-sm">/ <%=
+                                                            task.config.targetMinutes %> target</span></label>
+                                                <input type="number" class="input task-input" data-field="actualMinutes"
+                                                    value="<%= (task.result && task.result.actualMinutes != null) ? task.result.actualMinutes : '' %>"
+                                                    min="0" placeholder="0">
+                                            </div>
+
+                                            <% } else if (task.type==='counter' ) { %>
+                                                <div class="field">
+                                                    <label>Count <span class="text-muted text-sm">/ <%=
+                                                                task.config.targetCount %> target</span></label>
+                                                    <input type="number" class="input task-input"
+                                                        data-field="actualCount"
+                                                        value="<%= (task.result && task.result.actualCount != null) ? task.result.actualCount : '' %>"
+                                                        min="0" placeholder="0">
+                                                </div>
+
+                                                <% } else if (task.type==='timed_counter' ) { %>
+                                                    <div class="field-row">
+                                                        <div class="field">
+                                                            <label>Minutes <span class="text-muted text-sm">/ <%=
+                                                                        task.config.targetMinutes %></span></label>
+                                                            <input type="number" class="input task-input"
+                                                                data-field="actualMinutes"
+                                                                value="<%= (task.result && task.result.actualMinutes != null) ? task.result.actualMinutes : '' %>"
+                                                                min="0" placeholder="0">
+                                                        </div>
+                                                        <div class="field">
+                                                            <label>Count <span class="text-muted text-sm">/ <%=
+                                                                        task.config.targetCount %></span></label>
+                                                            <input type="number" class="input task-input"
+                                                                data-field="actualCount"
+                                                                value="<%= (task.result && task.result.actualCount != null) ? task.result.actualCount : '' %>"
+                                                                min="0" placeholder="0">
+                                                        </div>
+                                                    </div>
+
+                                                    <% } else if (task.type==='note' ) { %>
+                                                        <div class="field">
+                                                            <label>Your note</label>
+                                                            <textarea class="input task-input" data-field="note"
+                                                                rows="3"
+                                                                placeholder="Write something…"><%= (task.result && task.result.note) ? task.result.note : '' %></textarea>
+                                                        </div>
+
+                                                        <% } else if (task.type==='rating' ) { %>
+                                                            <div class="field">
+                                                                <label>
+                                                                    Rating
+                                                                    <span class="text-muted text-sm">
+                                                                        — <span data-rating-display>
+                                                                            <%= (task.result && task.result.rating
+                                                                                !=null) ? task.result.rating :
+                                                                                Math.ceil(task.config.maxRating / 2) %>
+                                                                        </span>
+                                                                        / <%= task.config.maxRating %>
+                                                                    </span>
+                                                                </label>
+                                                                <input type="range" class="input task-input"
+                                                                    data-field="rating" min="1"
+                                                                    max="<%= task.config.maxRating %>"
+                                                                    value="<%= (task.result && task.result.rating != null) ? task.result.rating : Math.ceil(task.config.maxRating / 2) %>">
+                                                            </div>
+                                                            <% } %>
+
+                                </div>
+                            </li>
+                            <% }) %>
+                    </ul>
+
+                    <div class="today-actions" id="complete-section">
+                        <button id="complete-btn" class="btn btn-primary btn-full" type="button"
+                            data-plan-id="<%= plan._id %>" data-label="Complete day ✓">
+                            Complete day ✓
+                        </button>
+                        <div id="reflection-area" class="reflection-area" hidden>
+                            <div class="field">
+                                <label for="reflection-input">How did it go? <span
+                                        class="text-muted">(optional)</span></label>
+                                <textarea id="reflection-input" class="input" rows="3"
+                                    placeholder="Anything worth noting?"></textarea>
+                            </div>
+                            <div class="field-row">
+                                <button id="confirm-complete-btn" class="btn btn-primary" type="button"
+                                    data-label="Save & finish 🎉">
+                                    Save & finish 🎉
+                                </button>
+                                <button id="cancel-complete-btn" class="btn btn-ghost" type="button">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <% } else { %>
+
+                        <div class="today-header">
+                            <h1>Day complete! 🎉</h1>
+                            <p class="text-muted">
+                                <%= plan.date %>
+                            </p>
+                        </div>
+
+                        <% if (plan.summary) { %>
+                            <div class="alert alert-success summary-alert">
+                                <span aria-hidden="true">📊</span>
+                                <span>
+                                    <%= plan.summary %>
+                                </span>
+                            </div>
+                            <% } %>
+
+                                <% if (plan.reflection) { %>
+                                    <div class="card card-sm reflection-card">
+                                        <p class="text-sm text-soft" style="margin-bottom:var(--sp-2)">Your reflection
+                                        </p>
+                                        <p>
+                                            <%= plan.reflection %>
+                                        </p>
+                                    </div>
+                                    <% } %>
+
+                                        <ul class="task-list">
+                                            <% plan.tasks.forEach(task=> {
+                                                const r = task.result || {};
+                                                const c = task.config || {};
+                                                let badgeClass = 'badge-neutral';
+                                                let statusLabel = '—';
+
+                                                if (task.type === 'checkbox') {
+                                                badgeClass = r.completed ? 'badge-success' : 'badge-danger';
+                                                statusLabel = r.completed ? 'Done' : 'Missed';
+                                                } else if (task.type === 'timer') {
+                                                if (!r.actualMinutes) { badgeClass = 'badge-danger'; statusLabel =
+                                                'Missed'; }
+                                                else if (r.actualMinutes >= c.targetMinutes) { badgeClass =
+                                                'badge-success'; statusLabel = r.actualMinutes + ' min'; }
+                                                else { badgeClass = 'badge-warn'; statusLabel = r.actualMinutes + '/' +
+                                                c.targetMinutes + ' min'; }
+                                                } else if (task.type === 'counter') {
+                                                if (!r.actualCount) { badgeClass = 'badge-danger'; statusLabel =
+                                                'Missed'; }
+                                                else if (r.actualCount >= c.targetCount) { badgeClass = 'badge-success';
+                                                statusLabel = '× ' + r.actualCount; }
+                                                else { badgeClass = 'badge-warn'; statusLabel = r.actualCount + '/' +
+                                                c.targetCount; }
+                                                } else if (task.type === 'timed_counter') {
+                                                const tOk = r.actualMinutes >= c.targetMinutes;
+                                                const cOk = r.actualCount >= c.targetCount;
+                                                if (!r.actualMinutes && !r.actualCount) { badgeClass = 'badge-danger';
+                                                statusLabel = 'Missed'; }
+                                                else if (tOk && cOk) { badgeClass = 'badge-success'; statusLabel =
+                                                r.actualMinutes + 'min × ' + r.actualCount; }
+                                                else { badgeClass = 'badge-warn'; statusLabel = (r.actualMinutes||0) +
+                                                '/' + c.targetMinutes + 'min · ' + (r.actualCount||0) + '/' +
+                                                c.targetCount; }
+                                                } else if (task.type === 'note') {
+                                                badgeClass = r.note ? 'badge-success' : 'badge-danger';
+                                                statusLabel = r.note ? 'Written' : 'Missed';
+                                                } else if (task.type === 'rating') {
+                                                badgeClass = r.rating != null ? 'badge-success' : 'badge-danger';
+                                                statusLabel = r.rating != null ? r.rating + '/' + c.maxRating :
+                                                'Missed';
+                                                }
+                                                %>
+                                                <li class="task-card card card-sm task-card--done">
+                                                    <div class="task-card__header">
+                                                        <div class="task-card__title-row">
+                                                            <span class="task-type-pip task-type-pip--<%= task.type %>"
+                                                                aria-hidden="true"></span>
+                                                            <span class="task-card__title">
+                                                                <%= task.title %>
+                                                            </span>
+                                                        </div>
+                                                        <span class="badge <%= badgeClass %>">
+                                                            <%= statusLabel %>
+                                                        </span>
+                                                    </div>
+                                                    <% if (task.type==='note' && r.note) { %>
+                                                        <p class="task-card__note text-sm text-soft">
+                                                            <%= r.note %>
+                                                        </p>
+                                                        <% } %>
+                                                </li>
+                                                <% }) %>
+                                        </ul>
+
+                                        <div class="today-actions">
+                                            <a href="/history" class="btn btn-outline">View history →</a>
+                                        </div>
+
+                                        <% } %>
+
+        </main>
+
+        <% if (plan) { %>
+            <script type="application/json" id="plan-data"><%- JSON.stringify(plan) %></script>
+            <% } %>
+
+                <%- include('../partials/footer') %>
