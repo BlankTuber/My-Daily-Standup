@@ -57,9 +57,14 @@
 
         TIMEZONES.forEach(tz => {
             const opt = document.createElement("option");
+            const isBrowser = tz.offset === browserOffset;
             opt.value = tz.offset;
-            opt.textContent = tz.label + (tz.offset === browserOffset ? "  ← your browser" : "");
+            opt.textContent = tz.label + (isBrowser ? "  ← your browser" : "");
             opt.selected = tz.offset === currentOffset;
+            if (isBrowser) {
+                opt.style.fontWeight = "bold";
+                opt.style.color = "#c97b4b";
+            }
             tzSelect.appendChild(opt);
         });
 
@@ -220,6 +225,10 @@
         confirmDeleteBtn.disabled = false;
         confirmDeleteBtn.innerHTML = confirmDeleteBtn.dataset.label;
     };
+
+    deletePassword?.addEventListener("keydown", e => {
+        if (e.key === "Enter" && !confirmDeleteBtn.disabled) confirmDeleteBtn.click();
+    });
 
     deleteAccountBtn?.addEventListener("click", openDeleteModal);
     cancelDeleteBtn?.addEventListener("click", closeDeleteModal);

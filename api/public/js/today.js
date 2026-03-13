@@ -14,6 +14,20 @@
             : btn.dataset.label;
     };
 
+    const bindEnterSubmit = (container, onEnter) => {
+        container.addEventListener("keydown", e => {
+            if (e.key !== "Enter") return;
+            const tag = e.target.tagName;
+            const type = e.target.type;
+            // Only fire on text-like inputs and number inputs, not textareas/selects
+            if (tag === "TEXTAREA" || tag === "SELECT") return;
+            if (tag === "INPUT" && (type === "text" || type === "number" || type === "password")) {
+                e.preventDefault();
+                onEnter();
+            }
+        });
+    };
+
     /* ============================================================
        CREATE PLAN STATE
        ============================================================ */
@@ -247,18 +261,19 @@
             bindTypeSelect(cardEl, existing);
             cardEl.querySelector("#edit-task-title").focus();
 
-            cardEl.querySelector(".js-edit-confirm").addEventListener("click", () => {
-                confirmTask(cardEl, (updated) => {
-                    tasks[editIdx] = updated;
-                    editingIndex = null;
-                    renderList();
-                });
+            const doConfirm = () => confirmTask(cardEl, (updated) => {
+                tasks[editIdx] = updated;
+                editingIndex = null;
+                renderList();
             });
 
+            cardEl.querySelector(".js-edit-confirm").addEventListener("click", doConfirm);
             cardEl.querySelector(".js-edit-cancel").addEventListener("click", () => {
                 editingIndex = null;
                 renderList();
             });
+
+            bindEnterSubmit(cardEl, doConfirm);
         };
 
         const showBuilder = () => {
@@ -293,15 +308,16 @@
             taskBuilderEl.querySelector("#task-title").focus();
             taskBuilderEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
-            taskBuilderEl.querySelector("#confirm-add").addEventListener("click", () => {
-                confirmTask(taskBuilderEl, (task) => {
-                    tasks.push(task);
-                    hideBuilder();
-                    renderList();
-                });
+            const doAdd = () => confirmTask(taskBuilderEl, (task) => {
+                tasks.push(task);
+                hideBuilder();
+                renderList();
             });
 
+            taskBuilderEl.querySelector("#confirm-add").addEventListener("click", doAdd);
             taskBuilderEl.querySelector("#cancel-add").addEventListener("click", hideBuilder);
+
+            bindEnterSubmit(taskBuilderEl, doAdd);
         };
 
         const hideBuilder = () => {
@@ -536,6 +552,16 @@
                         saveTask(card, taskId);
                     });
                 }
+
+                if (input.type === "number") {
+                    input.addEventListener("keydown", e => {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            clearTimeout(timers[taskId]);
+                            saveTask(card, taskId);
+                        }
+                    });
+                }
             });
         });
 
@@ -543,12 +569,13 @@
         const completeBtn = $("complete-btn");
         const confirmCompleteBtn = $("confirm-complete-btn");
         const cancelCompleteBtn = $("cancel-complete-btn");
+        const reflectionInput = $("reflection-input");
 
         const closeCompleteModal = () => { completeModal.hidden = true; };
 
         completeBtn?.addEventListener("click", () => {
             completeModal.hidden = false;
-            completeModal.querySelector("textarea")?.focus();
+            reflectionInput?.focus();
         });
 
         cancelCompleteBtn?.addEventListener("click", closeCompleteModal);
@@ -561,8 +588,15 @@
             if (e.key === "Escape" && completeModal && !completeModal.hidden) closeCompleteModal();
         });
 
+        reflectionInput?.addEventListener("keydown", e => {
+            if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && !confirmCompleteBtn.disabled) {
+                e.preventDefault();
+                confirmCompleteBtn.click();
+            }
+        });
+
         confirmCompleteBtn?.addEventListener("click", async () => {
-            const reflection = ($("reflection-input")?.value?.trim()) || "";
+            const reflection = (reflectionInput?.value?.trim()) || "";
             setLoading(confirmCompleteBtn, true);
             try {
                 const res = await fetch(`/plans/${planId}/complete`, {
