@@ -41,7 +41,6 @@
                     <div class="field settings-field">
                         <label for="timezone-select">Your timezone</label>
                         <select id="timezone-select" class="input" data-current="<%= user.timezoneOffset %>">
-                            <!-- Populated by settings.js -->
                         </select>
                     </div>
 
@@ -68,6 +67,7 @@
                         </button>
                     </div>
                 </section>
+
                 <section class="card settings-section settings-section--danger" aria-labelledby="danger-heading">
                     <h2 class="settings-section__title" id="danger-heading">Danger zone</h2>
                     <p class="text-sm text-muted">Permanently deletes your account and all your data. This cannot be
@@ -78,31 +78,37 @@
                             <p class="settings-label">Delete account</p>
                             <p class="text-sm text-muted">All plans, tasks and history will be erased.</p>
                         </div>
-                        <button id="delete-account-btn" class="btn btn-sm btn-danger" type="button"
-                            data-label="Delete account">
+                        <button id="delete-account-btn" class="btn btn-sm btn-danger" type="button">
                             Delete account
                         </button>
-                    </div>
-
-                    <div id="delete-confirm-area" class="delete-confirm-area" hidden>
-                        <div role="alert" class="alert alert-error" id="delete-error"></div>
-                        <div class="field">
-                            <label for="delete-password">Confirm your password</label>
-                            <input id="delete-password" type="password" class="input" placeholder="••••••••"
-                                autocomplete="current-password">
-                        </div>
-                        <div class="field-row">
-                            <button id="confirm-delete-btn" class="btn btn-danger btn-sm" type="button"
-                                data-label="Yes, delete everything">
-                                Yes, delete everything
-                            </button>
-                            <button id="cancel-delete-btn" class="btn btn-ghost btn-sm" type="button">Cancel</button>
-                        </div>
                     </div>
                 </section>
 
             </div>
 
         </main>
+
+        <div id="delete-modal" class="modal-backdrop" hidden>
+            <div class="modal">
+                <h2 class="modal__title">Delete account</h2>
+                <div class="modal__body">
+                    <p class="text-sm text-muted">This cannot be undone. All your plans, tasks and history will be
+                        permanently erased.</p>
+                    <div role="alert" class="alert alert-error" id="delete-error"></div>
+                    <div class="field">
+                        <label for="delete-password">Confirm your password</label>
+                        <input id="delete-password" type="password" class="input" placeholder="••••••••"
+                            autocomplete="current-password">
+                    </div>
+                </div>
+                <div class="modal__footer">
+                    <button id="confirm-delete-btn" class="btn btn-danger btn-sm" type="button"
+                        data-label="Yes, delete everything">
+                        Yes, delete everything
+                    </button>
+                    <button id="cancel-delete-btn" class="btn btn-ghost btn-sm" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
 
         <%- include('../partials/footer') %>

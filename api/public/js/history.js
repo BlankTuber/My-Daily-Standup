@@ -19,6 +19,8 @@
             weekday: "long", month: "long", day: "numeric", year: "numeric",
         });
 
+    const CHEVRON_SVG = `<svg class="toggle-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 6 8 10 12 6"/></svg>`;
+
     const taskResult = task => {
         const r = task.result || {};
         const c = task.config || {};
@@ -82,7 +84,8 @@
                         type="button"
                         aria-expanded="false"
                         aria-controls="tasks-${esc(plan._id)}">
-                    ${taskCount} task${taskCount !== 1 ? "s" : ""} ↓
+                    <span>${taskCount} task${taskCount !== 1 ? "s" : ""}</span>
+                    ${CHEVRON_SVG}
                 </button>
             </header>
 
@@ -125,15 +128,12 @@
 
             listEl.innerHTML = data.plans.map(renderPlan).join("");
 
-            // Expand/collapse task lists
             listEl.querySelectorAll(".toggle-tasks").forEach(btn => {
                 btn.addEventListener("click", () => {
                     const expanded = btn.getAttribute("aria-expanded") === "true";
                     const target = document.getElementById(btn.getAttribute("aria-controls"));
                     btn.setAttribute("aria-expanded", String(!expanded));
                     target.hidden = expanded;
-                    // Swap the chevron
-                    btn.textContent = btn.textContent.replace(expanded ? "↑" : "↓", expanded ? "↓" : "↑");
                 });
             });
 

@@ -113,7 +113,6 @@
         let reg;
         try {
             reg = await navigator.serviceWorker.register("/sw.js");
-            console.log("SW state:", reg.active?.state, "| installing:", !!reg.installing, "| waiting:", !!reg.waiting);
         } catch (err) {
             pushDesc.textContent = "SW register failed: " + err.message;
             return;
@@ -123,7 +122,6 @@
             await new Promise(resolve => {
                 const sw = reg.installing || reg.waiting;
                 sw.addEventListener("statechange", function handler() {
-                    console.log("SW statechange:", this.state);
                     if (this.state === "activated") {
                         sw.removeEventListener("statechange", handler);
                         resolve();
@@ -180,7 +178,6 @@
                     });
                     setPushUI(true);
                 } catch (err) {
-                    console.error("Subscribe error:", err);
                     pushDesc.textContent = "Could not subscribe: " + err.message;
                 }
             }
@@ -195,31 +192,44 @@
        ============================================================ */
     document.getElementById("logout-btn")?.addEventListener("click", async function () {
         setLoading(this, true);
-        try { await fetch("/auth/logout", { method: "DELETE", credentials: "include" }); } catch { /* ignore */ }
+        try { await fetch("/auth/logout", { method: "DELETE", credentials: "include" }); } catch { }
         window.location.href = "/login";
     });
 
     /* ============================================================
-   DELETE ACCOUNT
-   ============================================================ */
+       DELETE ACCOUNT — modal
+       ============================================================ */
+    const deleteModal = document.getElementById("delete-modal");
     const deleteAccountBtn = document.getElementById("delete-account-btn");
-    const deleteConfirmArea = document.getElementById("delete-confirm-area");
     const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
     const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
     const deleteError = document.getElementById("delete-error");
     const deletePassword = document.getElementById("delete-password");
 
-    deleteAccountBtn?.addEventListener("click", () => {
-        deleteConfirmArea.hidden = false;
-        deleteAccountBtn.hidden = true;
-        deletePassword.focus();
-    });
+    const openDeleteModal = () => {
+        deleteError.textContent = "";
+        deletePassword.value = "";
+        deleteModal.hidden = false;
+        setTimeout(() => deletePassword.focus(), 50);
+    };
 
-    cancelDeleteBtn?.addEventListener("click", () => {
-        deleteConfirmArea.hidden = true;
-        deleteAccountBtn.hidden = false;
+    const closeDeleteModal = () => {
+        deleteModal.hidden = true;
         deletePassword.value = "";
         deleteError.textContent = "";
+        confirmDeleteBtn.disabled = false;
+        confirmDeleteBtn.innerHTML = confirmDeleteBtn.dataset.label;
+    };
+
+    deleteAccountBtn?.addEventListener("click", openDeleteModal);
+    cancelDeleteBtn?.addEventListener("click", closeDeleteModal);
+
+    deleteModal?.addEventListener("click", e => {
+        if (e.target === deleteModal) closeDeleteModal();
+    });
+
+    document.addEventListener("keydown", e => {
+        if (e.key === "Escape" && !deleteModal.hidden) closeDeleteModal();
     });
 
     confirmDeleteBtn?.addEventListener("click", async () => {

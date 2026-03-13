@@ -12,6 +12,11 @@
 
                 <div id="task-list" role="list" aria-label="Tasks to add" aria-live="polite"></div>
 
+                <div id="task-empty-state" class="empty-state">
+                    <p>No tasks yet</p>
+                    <p>Add your first task to get started</p>
+                </div>
+
                 <div id="task-builder"></div>
 
                 <div class="today-actions">
@@ -32,8 +37,10 @@
                     </div>
 
                     <ul class="task-list" id="active-task-list">
-                        <% plan.tasks.forEach(task=> { %>
-                            <li class="task-card card card-sm" data-task-id="<%= task._id %>">
+                        <% plan.tasks.forEach(function(task, index) { const cfg=task.config || {}; %>
+                            <li class="task-card card card-sm" data-task-id="<%= task._id %>"
+                                data-type="<%= task.type %>" data-target-minutes="<%= cfg.targetMinutes || 0 %>"
+                                data-target-count="<%= cfg.targetCount || 0 %>" data-original-index="<%= index %>">
 
                                 <div class="task-card__header">
                                     <div class="task-card__title-row">
@@ -48,17 +55,14 @@
 
                                 <div class="task-card__type-label">
                                     <%= ({ checkbox: '☑️  Checkbox' , timer: '⏱️  Timer' , counter: '🔢  Counter' ,
-                                        timed_counter: '⏱️🔢  Timed counter' , note: '📝  Note' , rating: '⭐  Rating' ,
+                                        timed_counter: '⏱️🔢  Timed counter' , note: '📝  Note' , rating: '⭐  Rating'
                                         })[task.type] || task.type %>
-                                        <% if (task.config) { %>
-                                            <% if (task.config.targetMinutes) { %>&nbsp;· <%= task.config.targetMinutes
-                                                    %> min target<% } %>
-                                                        <% if (task.config.targetCount) { %>&nbsp;· <%=
-                                                                task.config.targetCount %>× target<% } %>
-                                                                    <% if (task.config.maxRating) { %>&nbsp;· out of <%=
-                                                                            task.config.maxRating %>
-                                                                            <% } %>
-                                                                                <% } %>
+                                        <% if (cfg.targetMinutes) { %>&nbsp;· <%= cfg.targetMinutes %> min target<% } %>
+                                                    <% if (cfg.targetCount) { %>&nbsp;· <%= cfg.targetCount %>× target<%
+                                                                } %>
+                                                                <% if (cfg.maxRating) { %>&nbsp;· out of <%=
+                                                                        cfg.maxRating %>
+                                                                        <% } %>
                                 </div>
 
                                 <div class="task-card__controls">
@@ -73,7 +77,7 @@
                                         <% } else if (task.type==='timer' ) { %>
                                             <div class="field">
                                                 <label>Minutes spent <span class="text-muted text-sm">/ <%=
-                                                            task.config.targetMinutes %> target</span></label>
+                                                            cfg.targetMinutes %> target</span></label>
                                                 <input type="number" class="input task-input" data-field="actualMinutes"
                                                     value="<%= (task.result && task.result.actualMinutes != null) ? task.result.actualMinutes : '' %>"
                                                     min="0" placeholder="0">
@@ -81,8 +85,8 @@
 
                                             <% } else if (task.type==='counter' ) { %>
                                                 <div class="field">
-                                                    <label>Count <span class="text-muted text-sm">/ <%=
-                                                                task.config.targetCount %> target</span></label>
+                                                    <label>Count <span class="text-muted text-sm">/ <%= cfg.targetCount
+                                                                %> target</span></label>
                                                     <input type="number" class="input task-input"
                                                         data-field="actualCount"
                                                         value="<%= (task.result && task.result.actualCount != null) ? task.result.actualCount : '' %>"
@@ -93,7 +97,7 @@
                                                     <div class="field-row">
                                                         <div class="field">
                                                             <label>Minutes <span class="text-muted text-sm">/ <%=
-                                                                        task.config.targetMinutes %></span></label>
+                                                                        cfg.targetMinutes %></span></label>
                                                             <input type="number" class="input task-input"
                                                                 data-field="actualMinutes"
                                                                 value="<%= (task.result && task.result.actualMinutes != null) ? task.result.actualMinutes : '' %>"
@@ -101,7 +105,7 @@
                                                         </div>
                                                         <div class="field">
                                                             <label>Count <span class="text-muted text-sm">/ <%=
-                                                                        task.config.targetCount %></span></label>
+                                                                        cfg.targetCount %></span></label>
                                                             <input type="number" class="input task-input"
                                                                 data-field="actualCount"
                                                                 value="<%= (task.result && task.result.actualCount != null) ? task.result.actualCount : '' %>"
@@ -125,43 +129,29 @@
                                                                         — <span data-rating-display>
                                                                             <%= (task.result && task.result.rating
                                                                                 !=null) ? task.result.rating :
-                                                                                Math.ceil(task.config.maxRating / 2) %>
+                                                                                Math.ceil((cfg.maxRating || 5) / 2) %>
                                                                         </span>
-                                                                        / <%= task.config.maxRating %>
+                                                                        / <%= cfg.maxRating || 5 %>
                                                                     </span>
                                                                 </label>
                                                                 <input type="range" class="input task-input"
-                                                                    data-field="rating" min="1"
-                                                                    max="<%= task.config.maxRating %>"
-                                                                    value="<%= (task.result && task.result.rating != null) ? task.result.rating : Math.ceil(task.config.maxRating / 2) %>">
+                                                                    data-field="rating"
+                                                                    data-touched="<%= (task.result && task.result.rating != null) ? 'true' : 'false' %>"
+                                                                    min="1" max="<%= cfg.maxRating || 5 %>"
+                                                                    value="<%= (task.result && task.result.rating != null) ? task.result.rating : Math.ceil((cfg.maxRating || 5) / 2) %>">
                                                             </div>
                                                             <% } %>
 
                                 </div>
                             </li>
-                            <% }) %>
+                            <% }); %>
                     </ul>
 
-                    <div class="today-actions" id="complete-section">
+                    <div class="today-actions">
                         <button id="complete-btn" class="btn btn-primary btn-full" type="button"
-                            data-plan-id="<%= plan._id %>" data-label="Complete day ✓">
+                            data-label="Complete day ✓">
                             Complete day ✓
                         </button>
-                        <div id="reflection-area" class="reflection-area" hidden>
-                            <div class="field">
-                                <label for="reflection-input">How did it go? <span
-                                        class="text-muted">(optional)</span></label>
-                                <textarea id="reflection-input" class="input" rows="3"
-                                    placeholder="Anything worth noting?"></textarea>
-                            </div>
-                            <div class="field-row">
-                                <button id="confirm-complete-btn" class="btn btn-primary" type="button"
-                                    data-label="Save & finish 🎉">
-                                    Save & finish 🎉
-                                </button>
-                                <button id="cancel-complete-btn" class="btn btn-ghost" type="button">Cancel</button>
-                            </div>
-                        </div>
                     </div>
 
                     <% } else { %>
@@ -193,20 +183,14 @@
                                     <% } %>
 
                                         <ul class="task-list">
-                                            <% plan.tasks.forEach(task=> {
-                                                const r = task.result || {};
-                                                const c = task.config || {};
-                                                let badgeClass = 'badge-neutral';
-                                                let statusLabel = '—';
-
-                                                if (task.type === 'checkbox') {
-                                                badgeClass = r.completed ? 'badge-success' : 'badge-danger';
-                                                statusLabel = r.completed ? 'Done' : 'Missed';
-                                                } else if (task.type === 'timer') {
-                                                if (!r.actualMinutes) { badgeClass = 'badge-danger'; statusLabel =
-                                                'Missed'; }
-                                                else if (r.actualMinutes >= c.targetMinutes) { badgeClass =
-                                                'badge-success'; statusLabel = r.actualMinutes + ' min'; }
+                                            <% plan.tasks.forEach(function(task) { const r=task.result || {}; const
+                                                c=task.config || {}; let badgeClass='badge-neutral' ; let
+                                                statusLabel='—' ; if (task.type==='checkbox' ) { badgeClass=r.completed
+                                                ? 'badge-success' : 'badge-danger' ; statusLabel=r.completed ? 'Done'
+                                                : 'Missed' ; } else if (task.type==='timer' ) { if (!r.actualMinutes) {
+                                                badgeClass='badge-danger' ; statusLabel='Missed' ; } else if
+                                                (r.actualMinutes>= c.targetMinutes) { badgeClass = 'badge-success';
+                                                statusLabel = r.actualMinutes + ' min'; }
                                                 else { badgeClass = 'badge-warn'; statusLabel = r.actualMinutes + '/' +
                                                 c.targetMinutes + ' min'; }
                                                 } else if (task.type === 'counter') {
@@ -254,7 +238,7 @@
                                                         </p>
                                                         <% } %>
                                                 </li>
-                                                <% }) %>
+                                                <% }); %>
                                         </ul>
 
                                         <div class="today-actions">
@@ -265,8 +249,31 @@
 
         </main>
 
-        <% if (plan) { %>
-            <script type="application/json" id="plan-data"><%- JSON.stringify(plan) %></script>
+        <% if (plan && plan.status==='active' ) { %>
+            <div id="complete-modal" class="modal-backdrop" hidden>
+                <div class="modal">
+                    <h2 class="modal__title">Complete your day 🎉</h2>
+                    <div class="modal__body">
+                        <div class="field">
+                            <label for="reflection-input">How did it go? <span
+                                    class="text-muted">(optional)</span></label>
+                            <textarea id="reflection-input" class="input" rows="3"
+                                placeholder="Anything worth noting?"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal__footer">
+                        <button id="confirm-complete-btn" class="btn btn-primary" type="button"
+                            data-label="Save & finish 🎉">
+                            Save & finish 🎉
+                        </button>
+                        <button id="cancel-complete-btn" class="btn btn-ghost" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
             <% } %>
 
-                <%- include('../partials/footer') %>
+                <% if (plan) { %>
+                    <script type="application/json" id="plan-data"><%- JSON.stringify(plan) %></script>
+                    <% } %>
+
+                        <%- include('../partials/footer') %>

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const DayPlan = require("../models/DayPlan");
 const User = require("../models/User");
+const getLocalDate = require("../utils/getLocalDate");
 
 const redirectIfAuth = (req, res, next) => {
     if (req.session.userId) return res.redirect("/today");
@@ -39,7 +40,7 @@ router.get("/register", redirectIfAuth, (req, res) => {
 
 router.get("/today", requireAuth, async (req, res) => {
     try {
-        const today = new Date().toISOString().split("T")[0];
+        const today = await getLocalDate(req.session.userId);
         const raw = await DayPlan.findOne({ userId: req.session.userId, date: today });
         const plan = raw ? JSON.parse(JSON.stringify(raw)) : null;
 

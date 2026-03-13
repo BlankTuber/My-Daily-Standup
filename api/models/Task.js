@@ -8,9 +8,9 @@ const taskSchema = new Schema({
         required: true
     },
     config: {
-        targetMinutes: { type: Number },    // timer, timed_counter
-        targetCount: { type: Number },      // counter, timed_counter
-        maxRating: { type: Number },        // rating
+        targetMinutes: { type: Number, min: 1 },
+        targetCount: { type: Number, min: 1 },
+        maxRating: { type: Number, min: 2, max: 10 },
     },
     result: {
         completed: { type: Boolean },
@@ -20,6 +20,24 @@ const taskSchema = new Schema({
         note: { type: String },
     },
     completedAt: { type: Date }
+});
+
+taskSchema.pre("validate", function () {
+    switch (this.type) {
+        case "timer":
+            if (!this.config?.targetMinutes) throw new Error("Timer tasks require targetMinutes");
+            break;
+        case "counter":
+            if (!this.config?.targetCount) throw new Error("Counter tasks require targetCount");
+            break;
+        case "timed_counter":
+            if (!this.config?.targetMinutes) throw new Error("Timed counter tasks require targetMinutes");
+            if (!this.config?.targetCount) throw new Error("Timed counter tasks require targetCount");
+            break;
+        case "rating":
+            if (!this.config?.maxRating) throw new Error("Rating tasks require maxRating");
+            break;
+    }
 });
 
 module.exports = taskSchema;
