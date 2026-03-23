@@ -2,7 +2,7 @@ const User = require("../models/User");
 
 module.exports = async (req, res, next) => {
     if (!req.session.userId) {
-        return res.status(401).json({ error: "Not authenticated" });
+        return res.redirect("/login");
     }
 
     try {
@@ -10,10 +10,10 @@ module.exports = async (req, res, next) => {
         if (!exists) {
             req.session.destroy(() => { });
             res.clearCookie("connect.sid");
-            return res.status(401).json({ error: "Not authenticated" });
+            return res.redirect("/login");
         }
         next();
     } catch {
-        return res.status(500).json({ error: "Internal server error" });
+        return res.redirect("/login");
     }
 };

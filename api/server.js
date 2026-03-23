@@ -15,6 +15,22 @@ const app = express();
 connectDB();
 runScheduler();
 
+const SUSPICIOUS_PATH = /(\.(env|git|svn|hg|htaccess|htpasswd|DS_Store|bak|backup|sql|conf|ini|log|lock|pem|key|crt|p12|pfx|ovpn)|wp-login\.php|xmlrpc\.php|\/etc\/passwd|\/proc\/self|\.\.[\\/])/i;
+
+app.use((req, res, next) => {
+    if (SUSPICIOUS_PATH.test(req.path)) {
+        return res.status(404).end();
+    }
+    next();
+});
+
+app.use(morgan("dev", {
+    skip: (req, res) => res.statusCode === 404 && !req.path.startsWith("/auth")
+        && !req.path.startsWith("/plans")
+        && !req.path.startsWith("/push")
+        && !["/today", "/history", "/settings", "/login", "/register", "/"].includes(req.path),
+}));
+
 // View engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -24,10 +40,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors(corsOptions));
 app.use(helmet(helmetOptions));
-app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 app.use(sessionMiddleware);
 
 // API routes

@@ -3,14 +3,10 @@ const router = express.Router();
 const DayPlan = require("../models/DayPlan");
 const User = require("../models/User");
 const getLocalDate = require("../utils/getLocalDate");
+const requireAuth = require("../middleware/isAuthView");
 
 const redirectIfAuth = (req, res, next) => {
     if (req.session.userId) return res.redirect("/today");
-    next();
-};
-
-const requireAuth = (req, res, next) => {
-    if (!req.session.userId) return res.redirect("/login");
     next();
 };
 
@@ -78,6 +74,13 @@ router.get("/history", requireAuth, (req, res) => {
 router.get("/settings", requireAuth, async (req, res) => {
     try {
         const raw = await User.findById(req.session.userId).select("username timezoneOffset");
+
+        if (!raw) {
+            req.session.destroy(() => { });
+            res.clearCookie("connect.sid");
+            return res.redirect("/login");
+        }
+
         const user = JSON.parse(JSON.stringify(raw));
 
         res.render("pages/settings", {

@@ -10,7 +10,7 @@ const subscribe = async (req, res) => {
         await PushSubscription.findOneAndUpdate(
             { userId },
             { subscription },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: "after" }
         );
         return res.status(201).json({ message: "Subscribed to push notifications" });
     } catch (err) {
