@@ -49,10 +49,10 @@ const runScheduler = () => {
                 const localHour = getLocalHour(now, user.timezoneOffset);
                 const localDate = getLocalDateString(now, user.timezoneOffset);
 
-                // Midnight — auto-complete any active plan
+                // Midnight — auto-complete any active plans from past dates
                 if (localHour === 0) {
-                    const plan = await DayPlan.findOne({ userId: user._id, date: localDate, status: "active" });
-                    if (plan) {
+                    const stalePlans = await DayPlan.find({ userId: user._id, date: { $lt: localDate }, status: "active" });
+                    for (const plan of stalePlans) {
                         plan.status = "completed";
                         plan.summary = computeSummary(plan.tasks);
                         await plan.save();
